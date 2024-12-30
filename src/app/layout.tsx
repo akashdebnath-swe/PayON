@@ -9,7 +9,7 @@ const fontSans = Inter({
 });
 
 export const metadata: Metadata = {
-    title: "Docu Mart",
+    title: "PayON",
     description: "A e-commerce website where you can sell your notes.",
 };
 
