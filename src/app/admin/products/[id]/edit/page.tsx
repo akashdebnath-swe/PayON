@@ -3,11 +3,8 @@ import React from "react";
 import ProductForm from "../../_components/ProductForm";
 import { db } from "@/lib/prisma";
 
-const EditProductPage = async ({
-    params: { id },
-}: {
-    params: { id: string };
-}) => {
+const EditProductPage = async ({ params }: { params: { id: string } }) => {
+    const { id } = await params;
     const product = await db.product.findUnique({ where: { id } });
 
     return (
