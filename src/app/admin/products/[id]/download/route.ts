@@ -5,8 +5,10 @@ import { db } from "@/lib/prisma";
 
 export async function GET(
     req: NextRequest,
-    { params: { id } }: { params: { id: string } }
+    { params }: { params: { id: string } }
 ) {
+    const { id } = await params;
+
     const product = await db.product.findUnique({
         where: { id },
         select: { filePath: true, name: true },
