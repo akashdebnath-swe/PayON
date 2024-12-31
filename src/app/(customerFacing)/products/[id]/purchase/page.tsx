@@ -2,6 +2,7 @@ import { db } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import React from "react";
 import Stripe from "stripe";
+import CheckoutForm from "./_components/CheckoutForm";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -24,7 +25,12 @@ const PurchasePage = async ({ params }: { params: { id: string } }) => {
         throw Error("Stripe failed to create payment intent");
     }
 
-    return <div>PurchasePage</div>;
+    return (
+        <CheckoutForm
+            product={product}
+            clientSecret={paymentIntent.client_secret}
+        />
+    );
 };
 
 export default PurchasePage;
