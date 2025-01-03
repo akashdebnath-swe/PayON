@@ -1,3 +1,5 @@
+"use client";
+
 import { formatCurrency } from "@/lib/formatters";
 import {
     Card,
@@ -8,8 +10,11 @@ import {
     CardTitle,
 } from "./ui/card";
 import { Button } from "./ui/button";
-import Link from "next/link";
 import Image from "next/image";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+import { db } from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
 type ProductCardProps = {
     id: string;
@@ -19,6 +24,8 @@ type ProductCardProps = {
     imagePath: string;
 };
 
+const stripePromise = loadStripe(process.env.stripe_public_key as string);
+
 export function ProductCard({
     id,
     name,
@@ -26,6 +33,31 @@ export function ProductCard({
     description,
     imagePath,
 }: ProductCardProps) {
+    const createCheckOutSession = async () => {
+        const product = await db.product.findUnique({ where: { id } });
+        const stripe = await stripePromise;
+
+        // Call the backend to create a checkout session...
+        const checkoutSession = await axios.post(
+            "/api/create-checkout-session",
+            {
+                items: product,
+                email: "test@gmail.com",
+            }
+        );
+
+        console.log(checkoutSession.data.id);
+
+        if (stripe == null) return notFound();
+
+        // Redirect user/customer to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: checkoutSession.data.id,
+        });
+
+        if (result.error) alert(result.error.message);
+    };
+
     return (
         <Card className="flex overflow-hidden flex-col">
             <div className="relative w-full h-auto aspect-video">
@@ -41,8 +73,12 @@ export function ProductCard({
                 <p className="line-clamp-4">{description}</p>
             </CardContent>
             <CardFooter>
-                <Button asChild size="lg" className="w-full">
-                    <Link href={`/products/${id}/purchase`}>Purchase</Link>
+                <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={createCheckOutSession}
+                >
+                    Purchase
                 </Button>
             </CardFooter>
         </Card>
