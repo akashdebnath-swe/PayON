@@ -14,7 +14,7 @@ import Image from "next/image";
 type ProductCardProps = {
     id: string;
     name: string;
-    priceInCents: number;
+    price: number;
     description: string;
     imagePath: string;
 };
@@ -22,19 +22,24 @@ type ProductCardProps = {
 export function ProductCard({
     id,
     name,
-    priceInCents,
+    price,
     description,
     imagePath,
 }: ProductCardProps) {
     return (
         <Card className="flex overflow-hidden flex-col">
-            <div className="relative w-full h-auto aspect-video">
-                <Image src={imagePath} fill alt={name} />
+            <div className="relative w-full h-[300px]">
+                <Image
+                    src={imagePath}
+                    fill
+                    alt={name}
+                    className="rounded-md object-contain"
+                />
             </div>
             <CardHeader>
                 <CardTitle>{name}</CardTitle>
                 <CardDescription>
-                    {formatCurrency(priceInCents / 100)}
+                    price: {formatCurrency(price)}
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">

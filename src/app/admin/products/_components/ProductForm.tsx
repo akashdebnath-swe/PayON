@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { formatCurrency } from "@/lib/formatters";
 import React, { useActionState, useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormStatus } from "react-dom";
@@ -16,15 +15,13 @@ const ProductForm = ({ product }: { product: Product | null }) => {
         product == null ? addProduct : updateProduct.bind(null, product.id),
         {}
     );
-    const [priceInCents, setPriceInCents] = useState<number>(
-        product?.priceInCents || 0
-    );
+    const [price, setPrice] = useState<number>(product?.price || 0);
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
         if (/^\d*$/.test(value)) {
-            setPriceInCents(Number(value));
+            setPrice(Number(value));
         }
     };
 
@@ -45,13 +42,13 @@ const ProductForm = ({ product }: { product: Product | null }) => {
                     )}
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="priceInCents">Price In Cents</Label>
+                    <Label htmlFor="price">Price In Rupee</Label>
                     <Input
                         type="text"
-                        id="priceInCents"
-                        name="priceInCents"
+                        id="price"
+                        name="price"
                         required
-                        value={priceInCents}
+                        value={price}
                         onChange={handlePriceChange}
                         style={{
                             MozAppearance: "textfield",
@@ -59,13 +56,9 @@ const ProductForm = ({ product }: { product: Product | null }) => {
                             appearance: "none",
                         }}
                     />
-                    <div className="text-muted-foreground">
-                        {priceInCents && formatCurrency(priceInCents / 100)}
-                    </div>
-                    {error.priceInCents && (
-                        <div className="text-destructive">
-                            {error.priceInCents}
-                        </div>
+
+                    {error.price && (
+                        <div className="text-destructive">{error.price}</div>
                     )}
                 </div>
                 <div className="space-y-2">
@@ -100,7 +93,7 @@ const ProductForm = ({ product }: { product: Product | null }) => {
                     )}
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="image">Image</Label>
+                    <Label htmlFor="image">Cover Image</Label>
                     <Input
                         type="file"
                         id="image"

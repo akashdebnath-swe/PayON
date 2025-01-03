@@ -85,7 +85,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const product = // coming from database.
 
 const paymentIntent = await stripe.paymentIntents.create({
-    amount: product.priceInCents,
+    amount: product.price,
     currency: "USD",
     metadata: { productId: product.id },
 });

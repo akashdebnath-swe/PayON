@@ -6,7 +6,7 @@ const NewProductPage = () => {
     return (
         <>
             <PageHeader>Add Product</PageHeader>
-            <ProductForm />
+            <ProductForm product={null} />
         </>
     );
 };
